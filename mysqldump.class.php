@@ -1,13 +1,6 @@
 <?php
 
 namespace PHPSQLDUMP;
-
-function prin()
-{
-
-}
-
-
 class SQLDUMP
 {
     protected $SQL_DB;
