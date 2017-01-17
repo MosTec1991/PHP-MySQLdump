@@ -3,13 +3,16 @@
 namespace PHPSQLDUMP;
 class SQLDUMP
 {
+    //SQL HOST
     protected $SQL_DB;
     protected $SQL_HOST;
     protected $SQL_PASSWORD;
     protected $SQL_USER;
 
+    //SQL Backup File
     protected $BackupFile;
 
+    //Script Version
     protected $Version='--v0.0.0';
 
 
