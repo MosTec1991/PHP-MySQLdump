@@ -25,15 +25,13 @@ class SQLDUMP
     }
 
 
-    public function BackupDB($ForceDownload=true)
+    public function BackupDB($TableArray=null,$ForceDownload=true)
     {
         $this->BackupFile = tmpfile();
 
         $this->HeaderComment();
         $this->DatabaseGlobalVar();
-
-
-
+        $this->TableData($TableArray);
 
         if($ForceDownload)
         {
@@ -108,6 +106,85 @@ class SQLDUMP
         fwrite($this->BackupFile,"SET time_zone = \"+00:00\";".PHP_EOL);
         fwrite($this->BackupFile,PHP_EOL.PHP_EOL);
         fwrite($this->BackupFile,"--".PHP_EOL."-- Database: `".$this->SQL_DB."`".PHP_EOL."--".PHP_EOL.PHP_EOL."-- --------------------------------------------------------".PHP_EOL.PHP_EOL);
+    }
+
+    private function TableData($Tables=null)
+    {
+        if($Tables==null)
+        {
+            $Tables=$this->GetAllTables();
+        }
+
+        foreach($Tables as $key => $value)
+        {
+            $this->ShowCreateTable($Tables[$key]);
+            $this->ShowTableDATA($Tables[$key]);
+        }
+    }
+
+    /**
+     * @return array of Tables
+     */
+    private function GetAllTables()
+    {
+        $Table=array();
+        $RawQuery=$this->SQLQuery("show tables;");
+        foreach($RawQuery as $key => $value)
+        {
+            $Table[]=$RawQuery[$key]['Tables_in_'.$this->SQL_DB];
+        }
+        return $Table;
+    }
+
+    private function ShowCreateTable($TableName)
+    {
+        fwrite($this->BackupFile,'--'.PHP_EOL.'-- Dumping data for table `'.$TableName.'`'.PHP_EOL.'--'.PHP_EOL.PHP_EOL);
+        fwrite($this->BackupFile,'DROP TABLE IF EXISTS '.$TableName.';'.PHP_EOL);
+        fwrite($this->BackupFile,$this->SQLQuery("SHOW CREATE TABLE ".$TableName)[0]['Create Table'].';'.PHP_EOL.PHP_EOL);
+    }
+
+    private function ShowTableDATA($TableName)
+    {
+        fwrite($this->BackupFile,'--'.PHP_EOL.'-- Table structure for table `'.$TableName.'`'.PHP_EOL.'--'.PHP_EOL.PHP_EOL);
+        $RawQuery=$this->SQLQuery("SHOW columns FROM ".$TableName);
+
+        fwrite($this->BackupFile,'INSERT INTO `'.$TableName.'` (');
+
+        $Cols=array();
+        for($i=0;$i<count($RawQuery);$i++)
+        {
+            fwrite($this->BackupFile,'`'.$RawQuery[$i]['Field'].'`');
+            $Cols[]=$RawQuery[$i]['Field'];
+            if($i<count($RawQuery)-1)
+            {
+                fwrite($this->BackupFile,', ');
+            }
+        }
+        fwrite($this->BackupFile,') VALUES'.PHP_EOL);
+
+        $RawQuery=$this->SQLQuery("SELECT * FROM ".$TableName);
+
+        for($i=0;$i<count($RawQuery);$i++)
+        {
+            fwrite($this->BackupFile,'(');
+            for($j=0;$j<count($Cols);$j++)
+            {
+                fwrite($this->BackupFile,"'".$RawQuery[$i][$Cols[$j]]."'");
+                if($j<count($Cols)-1)
+                {
+                    fwrite($this->BackupFile,', ');
+                }
+            }
+            if($i<count($RawQuery)-1)
+            {
+                fwrite($this->BackupFile,'),'.PHP_EOL);
+            }
+            else
+            {
+                fwrite($this->BackupFile,');');
+            }
+        }
+
     }
 
     /**
