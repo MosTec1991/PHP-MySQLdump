@@ -20,17 +20,21 @@ class SQLDUMP
     }
 
 
-    public function BackupDB()
+    public function BackupDB($ForceDownload=true)
     {
         $this->BackupFile = tmpfile();
 
+        $this->HeaderComment();
 
 
-        
-        //Change This line for file name
-        $FileName=$this->SQL_DB.'@'.$this->SQL_HOST.' '.date('Y-m-d').'.sql';
-        //Download File
-        $this->Download($FileName);
+
+        if($ForceDownload)
+        {
+            //Change This line for file name
+            $FileName=$this->SQL_DB.'@'.$this->SQL_HOST.' '.date('Y-m-d').'.sql';
+            //Download File
+            $this->Download($FileName);
+        }
     }
 
     /**
