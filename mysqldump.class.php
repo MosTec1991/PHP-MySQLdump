@@ -13,7 +13,7 @@ class SQLDUMP
     protected $BackupFile;
 
     //Script Version
-    protected $Version='-- v0.0.0';
+    protected $Version='-- v1.0.0';
 
 
     function __construct($SQL_HOST,$SQL_USER,$SQL_PASSWORD,$SQL_DB)
