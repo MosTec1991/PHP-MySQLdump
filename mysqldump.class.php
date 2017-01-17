@@ -79,3 +79,37 @@ class SQLDUMP
         exit;
     }
 }
+    /**
+     * Execute SQL Query
+     *
+     * @param $QueryString
+     * @return array Result
+     */
+    private function SQLQuery($QueryString)
+    {
+        $LinkID=mysqli_connect($this->SQL_HOST, $this->SQL_USER, $this->SQL_PASSWORD, $this->SQL_DB);
+        mysqli_set_charset($LinkID,"utf8");
+
+        for ($i = 1; $i < 6; $i++)
+        {
+            $QueryID = mysqli_query($LinkID, $QueryString);
+            if (!in_array(mysqli_errno($LinkID), array(1213, 1205)))
+            {
+                break;
+            }
+            trigger_error("Database deadlock, attempt $i");
+
+            sleep($i * rand(2, 5)); // Wait longer as attempts increase
+        }
+
+        $Return = array();
+
+        while ($Row = mysqli_fetch_array($QueryID, MYSQLI_ASSOC))
+        {
+            $Return[] = $Row;
+        }
+        mysqli_data_seek($QueryID, 0);
+        return $Return;
+    }
+
+}
