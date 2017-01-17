@@ -181,9 +181,11 @@ class SQLDUMP
             }
             else
             {
-                fwrite($this->BackupFile,');');
+                fwrite($this->BackupFile,');'.PHP_EOL.PHP_EOL);
             }
         }
+
+        fwrite($this->BackupFile,'-- --------------------------------------------------------'.PHP_EOL.PHP_EOL);
 
     }
 
