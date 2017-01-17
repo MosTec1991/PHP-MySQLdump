@@ -108,6 +108,12 @@ class SQLDUMP
         fwrite($this->BackupFile,"--".PHP_EOL."-- Database: `".$this->SQL_DB."`".PHP_EOL."--".PHP_EOL.PHP_EOL."-- --------------------------------------------------------".PHP_EOL.PHP_EOL);
     }
 
+
+    /**
+     * Create Backup For Tables
+     *
+     * @param null $Tables
+     */
     private function TableData($Tables=null)
     {
         if($Tables==null)
@@ -123,6 +129,7 @@ class SQLDUMP
     }
 
     /**
+     * Return All table of database
      * @return array of Tables
      */
     private function GetAllTables()
@@ -136,6 +143,10 @@ class SQLDUMP
         return $Table;
     }
 
+    /**
+     * Create Drop And Create Command For Table
+     * @param $TableName
+     */
     private function ShowCreateTable($TableName)
     {
         fwrite($this->BackupFile,'--'.PHP_EOL.'-- Dumping data for table `'.$TableName.'`'.PHP_EOL.'--'.PHP_EOL.PHP_EOL);
@@ -143,6 +154,11 @@ class SQLDUMP
         fwrite($this->BackupFile,$this->SQLQuery("SHOW CREATE TABLE ".$TableName)[0]['Create Table'].';'.PHP_EOL.PHP_EOL);
     }
 
+    /**
+     * Create INSET INTO Table SQL Command
+     *
+     * @param $TableName
+     */
     private function ShowTableDATA($TableName)
     {
         fwrite($this->BackupFile,'--'.PHP_EOL.'-- Table structure for table `'.$TableName.'`'.PHP_EOL.'--'.PHP_EOL.PHP_EOL);
@@ -181,9 +197,11 @@ class SQLDUMP
             }
             else
             {
-                fwrite($this->BackupFile,');');
+                fwrite($this->BackupFile,');'.PHP_EOL.PHP_EOL);
             }
         }
+
+        fwrite($this->BackupFile,'-- --------------------------------------------------------'.PHP_EOL.PHP_EOL);
 
     }
 
