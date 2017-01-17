@@ -13,7 +13,7 @@ class SQLDUMP
     protected $BackupFile;
 
     //Script Version
-    protected $Version='--v0.0.0';
+    protected $Version='-- v0.0.0';
 
 
     function __construct($SQL_HOST,$SQL_USER,$SQL_PASSWORD,$SQL_DB)
@@ -89,14 +89,14 @@ class SQLDUMP
      */
     private function HeaderComment()
     {
-        fwrite($this->BackupFile,'--PHP SQL DUMP'.PHP_EOL);
+        fwrite($this->BackupFile,'-- PHP SQL DUMP'.PHP_EOL);
         fwrite($this->BackupFile,$this->Version.PHP_EOL);
-        fwrite($this->BackupFile,'--https://github.com/MosTec1991/PHP-MySQLdump'.PHP_EOL);
-        fwrite($this->BackupFile,'--'.PHP_EOL);
-        fwrite($this->BackupFile,'--Host: '.$this->SQL_HOST.PHP_EOL);
-        fwrite($this->BackupFile,'--Generation Time: '.date('Y-M-d').' at '.date('H:i:s').PHP_EOL);
-        fwrite($this->BackupFile,'--Server version: '.$this->SQLQuery("SELECT VERSION()")[0]['VERSION()'].PHP_EOL);
-        fwrite($this->BackupFile,'--PHP Version: '.phpversion().PHP_EOL.PHP_EOL);
+        fwrite($this->BackupFile,'-- https://github.com/MosTec1991/PHP-MySQLdump'.PHP_EOL);
+        fwrite($this->BackupFile,'-- '.PHP_EOL);
+        fwrite($this->BackupFile,'-- Host: '.$this->SQL_HOST.PHP_EOL);
+        fwrite($this->BackupFile,'-- Generation Time: '.date('Y-M-d').' at '.date('H:i:s').PHP_EOL);
+        fwrite($this->BackupFile,'-- Server version: '.$this->SQLQuery("SELECT VERSION()")[0]['VERSION()'].PHP_EOL);
+        fwrite($this->BackupFile,'-- PHP Version: '.phpversion().PHP_EOL.PHP_EOL);
     }
 
     /**
