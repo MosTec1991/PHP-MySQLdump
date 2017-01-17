@@ -30,6 +30,8 @@ class SQLDUMP
         $this->BackupFile = tmpfile();
 
         $this->HeaderComment();
+        $this->DatabaseGlobalVar();
+
 
 
 
@@ -43,14 +45,12 @@ class SQLDUMP
     }
 
     /**
-     *
      * Force User Web Browser To Download File
      *
      * @param $file_name
      */
     protected function Download($file_name)
     {
-
         // hide notices
         @ini_set('error_reporting', E_ALL & ~ E_NOTICE);
 
@@ -86,7 +86,6 @@ class SQLDUMP
 
     /**
      * Create Header For SQL File
-     *
      */
     private function HeaderComment()
     {
@@ -97,9 +96,19 @@ class SQLDUMP
         fwrite($this->BackupFile,'--Host: '.$this->SQL_HOST.PHP_EOL);
         fwrite($this->BackupFile,'--Generation Time: '.date('Y-M-d').' at '.date('H:i:s').PHP_EOL);
         fwrite($this->BackupFile,'--Server version: '.$this->SQLQuery("SELECT VERSION()")[0]['VERSION()'].PHP_EOL);
-        fwrite($this->BackupFile,'--PHP Version: '.phpversion().PHP_EOL);
+        fwrite($this->BackupFile,'--PHP Version: '.phpversion().PHP_EOL.PHP_EOL);
     }
 
+    /**
+     * Generate Database Global Variable
+     */
+    private function DatabaseGlobalVar()
+    {
+        fwrite($this->BackupFile,'SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";'.PHP_EOL);
+        fwrite($this->BackupFile,"SET time_zone = \"+00:00\";".PHP_EOL);
+        fwrite($this->BackupFile,PHP_EOL.PHP_EOL);
+        fwrite($this->BackupFile,"--".PHP_EOL."-- Database: `".$this->SQL_DB."`".PHP_EOL."--".PHP_EOL.PHP_EOL."-- --------------------------------------------------------".PHP_EOL.PHP_EOL);
+    }
 
     /**
      * Execute SQL Query
